@@ -1,4 +1,4 @@
-const startingBoard = [" "," "," "," "," "," "," "," "," "];
+const state = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 const winningCombos = [
                         [0,1,2], [3,4,5], [6,7,8], // horizontal
                         [0,3,6], [1,4,7], [2,5,8], // vertical
@@ -36,9 +36,19 @@ function checkWin() {
   });
 };
 
+function randomMove() {
+  randomSpace = Math.floor(Math.random() * (9 - 0));
+  console.log(randomSpace)
+  if (currentBoard[randomSpace].textContent !== " ") {
+    return randomMove();
+  } else {
+    return randomSpace;
+  }
+}
+
 function computerMove() {
-  let randomMove = Math.floor(Math.random() * (9 - 1) + 1);
-  currentBoard[randomMove].textContent = currentToken();
+  currentBoard[randomMove()].textContent = currentToken();
+  moveCounter++;
   checkWin();
 }
 
@@ -69,7 +79,7 @@ function startGame(gameType) {
     square.textContent = " ";
   };
   addListeners();
-  if (gameType = '2p') {
+  if (gameType = "1") {
     computer = true;
     computerMove();
   }
