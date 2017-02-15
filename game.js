@@ -9,10 +9,12 @@ let currentBoard = document.getElementsByTagName('td');
 let winnerBanner = document.getElementById('winner');
 let moveCounter = 0;
 let gameOver = false;
+let computer = false;
+let playerTurn = false;
 
 function addListeners() {
   for (square of currentBoard) {
-    square.addEventListener('click', makeMove);
+    square.addEventListener('click', playerMove);
   }
 }
 
@@ -22,9 +24,9 @@ function currentToken() {
 
 function checkWin() {
   winningCombos.forEach(function(combo, index) {
-    space1 = currentBoard[combo[0]].textContent;
-    space2 = currentBoard[combo[1]].textContent;
-    space3 = currentBoard[combo[2]].textContent;
+    let space1 = currentBoard[combo[0]].textContent;
+    let space2 = currentBoard[combo[1]].textContent;
+    let space3 = currentBoard[combo[2]].textContent;
 
     if (space1 === "X" && space2 === "X" && space3 === "X") {
       winner(space1);
@@ -34,19 +36,29 @@ function checkWin() {
   });
 };
 
-function makeMove() {
+function computerMove() {
+  let randomMove = Math.floor(Math.random() * (9 - 1) + 1);
+  currentBoard[randomMove].textContent = currentToken();
+  checkWin();
+}
+
+function playerMove() {
   if (this.textContent != " ") {
     alert("You cannot move there. Please pick a different spot");
   } else {
     this.textContent = currentToken();
     moveCounter++;
+    playerTurn = false
   }
   checkWin();
+  if (computer) {
+    computerMove();
+  }
 }
 
 function removeListeners() {
   for (square of currentBoard) {
-    square.removeEventListener('click', makeMove);
+    square.removeEventListener('click', playerMove);
   }
 }
 
@@ -57,6 +69,10 @@ function startGame(gameType) {
     square.textContent = " ";
   };
   addListeners();
+  if (gameType = '2p') {
+    computer = true;
+    computerMove();
+  }
 }
 
 function winner(token) {
