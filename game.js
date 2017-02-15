@@ -10,8 +10,10 @@ let winnerBanner = document.getElementById('winner');
 let moveCounter = 0;
 let gameOver = false;
 
-for (space of currentBoard) {
-  space.addEventListener('click', makeMove);
+function addListeners() {
+  for (square of currentBoard) {
+    square.addEventListener('click', makeMove);
+  }
 }
 
 function currentToken() {
@@ -42,14 +44,22 @@ function makeMove() {
   checkWin();
 }
 
-function resetGame() {
+function removeListeners() {
+  for (square of currentBoard) {
+    square.removeEventListener('click', makeMove);
+  }
+}
+
+function startGame(gameType) {
   moveCounter = 0;
   alertBanner.innerHTML = "";
-  for (space of currentBoard) {
-    space.textContent = " ";
+  for (square of currentBoard) {
+    square.textContent = " ";
   };
+  addListeners();
 }
 
 function winner(token) {
   alertBanner.innerHTML = `Winner: ${token}`;
+  removeListeners();
 }

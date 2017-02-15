@@ -14,9 +14,9 @@
       <div class="row">
         <table>
           <tr>
-            <td data-id="0">X</td>
-            <td data-id="1">O</td>
-            <td data-id="2">X</td>
+            <td data-id="0"> </td>
+            <td data-id="1"> </td>
+            <td data-id="2"> </td>
           </tr>
           <tr>
             <td data-id="3"> </td>
@@ -31,15 +31,14 @@
         </table>
       </div>
       <div class="row">
-        <button class="button-primary" onclick="resetGame()">Reset Game</button>
+        <button class="button-primary" onclick="startGame('1')">1P</button>
+        <button class="button-primary" onclick="startGame('2')">2P</button>
       </div>
       <div class="row">
         <h3 id="alertBanner"></h3>
       </div>
     </div>
   </body>
-  <script src="./alerts/sweetalert.min.js"></script>
-<link rel="stylesheet" type="text/css" href="./alerts/sweetalert.css">
   <script src="./game.js"></script>
   <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </html>
