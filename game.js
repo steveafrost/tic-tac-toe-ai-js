@@ -1,4 +1,3 @@
-const state = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 const winningCombos = [
                         [0,1,2], [3,4,5], [6,7,8], // horizontal
                         [0,3,6], [1,4,7], [2,5,8], // vertical
@@ -6,7 +5,7 @@ const winningCombos = [
                       ]
 
 let currentBoard = Array.from(document.getElementsByTagName('td'));
-let winnerBanner = document.getElementById('winner');
+let alertBanner = document.getElementById('alertBanner');
 let moveCounter = 0;
 let gameOver = false;
 let computer = false;
@@ -38,18 +37,22 @@ function currentToken() {
 }
 
 
-function checkWin() {
+function checkWinOrTie() {
   winningCombos.forEach(function(combo, index) {
     let space1 = currentBoard[combo[0]].textContent;
     let space2 = currentBoard[combo[1]].textContent;
     let space3 = currentBoard[combo[2]].textContent;
 
     if (space1 === "X" && space2 === "X" && space3 === "X") {
-      winner(space1);
+      gameFinished(space1);
     } else if (space1 === "O" && space2 === "O" && space3 === "O") {
-      winner(space1);
+      gameFinished(space1);
     };
   });
+
+  if (availableMoves().length === 0) {
+    gameFinished();
+  }
 };
 
 
@@ -67,7 +70,7 @@ function randomMove() {
 function computerMove() {
   currentBoard[randomMove()].textContent = currentToken();
   moveCounter++;
-  checkWin();
+  checkWinOrTie();
 }
 
 
@@ -79,7 +82,7 @@ function playerMove() {
     moveCounter++;
     playerTurn = false
   }
-  checkWin();
+  checkWinOrTie();
   if (computer) {
     computerMove();
   }
@@ -94,6 +97,7 @@ function removeListeners() {
 
 
 function startGame(gameType) {
+  gameOver = false;
   moveCounter = 0;
   alertBanner.innerHTML = "";
   for (square of currentBoard) {
@@ -106,7 +110,13 @@ function startGame(gameType) {
 }
 
 
-function winner(token) {
-  alertBanner.innerHTML = `Winner: ${token}`;
+function gameFinished(token) {
+  if (token) {
+    alertBanner.innerHTML = `Winner: ${token}`;
+  } else {
+    alertBanner.innerHTML = 'Tie Game!';
+  }
+
+  gameOver = true;
   removeListeners();
 }
