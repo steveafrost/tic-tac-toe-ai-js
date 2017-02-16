@@ -5,12 +5,13 @@ const winningCombos = [
                         [0,4,8], [2,4,6]           // diagonal
                       ]
 
-let currentBoard = document.getElementsByTagName('td');
+let currentBoard = Array.from(document.getElementsByTagName('td'));
 let winnerBanner = document.getElementById('winner');
 let moveCounter = 0;
 let gameOver = false;
 let computer = false;
 let playerTurn = false;
+
 
 function addListeners() {
   for (square of currentBoard) {
@@ -18,9 +19,24 @@ function addListeners() {
   }
 }
 
+
+function availableMoves() {
+  let availableMoves = [];
+
+  currentBoard.forEach(function(square, index) {
+    if (square.textContent == " ") {
+      availableMoves.push(index);
+    };
+  });
+
+  return availableMoves;
+}
+
+
 function currentToken() {
   return moveCounter % 2 === 0 ? "X" : "O";
 }
+
 
 function checkWin() {
   winningCombos.forEach(function(combo, index) {
@@ -36,6 +52,7 @@ function checkWin() {
   });
 };
 
+
 function randomMove() {
   randomSpace = Math.floor(Math.random() * (9 - 0));
   console.log(randomSpace)
@@ -46,11 +63,13 @@ function randomMove() {
   }
 }
 
+
 function computerMove() {
   currentBoard[randomMove()].textContent = currentToken();
   moveCounter++;
   checkWin();
 }
+
 
 function playerMove() {
   if (this.textContent != " ") {
@@ -66,11 +85,13 @@ function playerMove() {
   }
 }
 
+
 function removeListeners() {
   for (square of currentBoard) {
     square.removeEventListener('click', playerMove);
   }
 }
+
 
 function startGame(gameType) {
   moveCounter = 0;
@@ -79,11 +100,11 @@ function startGame(gameType) {
     square.textContent = " ";
   };
   addListeners();
-  if (gameType = "1") {
+  if (gameType === '1') {
     computer = true;
-    computerMove();
   }
 }
+
 
 function winner(token) {
   alertBanner.innerHTML = `Winner: ${token}`;
