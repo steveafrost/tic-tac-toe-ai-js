@@ -50,7 +50,7 @@ function checkWinOrTie() {
     };
   });
 
-  if (availableMoves().length === 0) {
+  if (fullBoard()) {
     gameFinished();
   }
 };
@@ -74,6 +74,11 @@ function computerMove() {
 }
 
 
+function fullBoard() {
+  return !currentBoard.some(function(square) { return square.textContent === " "})
+}
+
+
 function playerMove() {
   if (this.textContent != " ") {
     alert("You cannot move there. Please pick a different spot");
@@ -87,7 +92,6 @@ function playerMove() {
     computerMove();
   }
 }
-
 
 function removeListeners() {
   for (square of currentBoard) {
