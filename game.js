@@ -85,13 +85,13 @@ function randomMove() {
 
 function makeMove(index) {
   currentBoard[index].textContent = currentToken();
+  moveCounter++;
 }
 
 function makeComputerMove() {
   // currentBoard[randomMove()].textContent = currentToken();
   minimax(0);
   makeMove(computerMove)
-  moveCounter++;
   if (gameOver()) {
     gameFinished();
   };
@@ -101,9 +101,7 @@ function makePlayerMove() {
   if (this.textContent != " ") {
     alert("You cannot move there. Please pick a different spot");
   } else {
-    this.textContent = currentToken();
-    moveCounter++;
-    playerTurn = false
+    makeMove(parseInt(this.dataset.id));
   }
   if (gameOver()) {
     gameFinished();
@@ -114,6 +112,7 @@ function makePlayerMove() {
 
 function unmakeMove(index) {
   currentBoard[index].textContent = " ";
+  moveCounter--;
 }
 
 function minimax(depth) {
@@ -132,17 +131,21 @@ function minimax(depth) {
     unmakeMove(move);
   }
 
+  var maxScore, maxScoreIndex, minScore, minScoreIndex;
+
   if(currentToken() === 'O') {
     maxScore = Math.max.apply(Math, scores);
     maxScoreIndex = scores.indexOf(maxScore);
     computerChoice = moves[maxScoreIndex];
     console.log(scores[maxScoreIndex])
+    console.log("computer move")
     return scores[maxScoreIndex]
   } else {
     minScore = Math.min.apply(Math, scores);
     minScoreIndex = scores.indexOf(minScore);
     computerChoice = moves[minScoreIndex];
     console.log(scores[minScoreIndex])
+    console.log("player move")
     return scores[minScoreIndex]
   }
 }
