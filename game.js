@@ -9,11 +9,12 @@ let alertBanner = document.getElementById('alertBanner');
 let moveCounter = 0;
 let computer = false;
 let playerTurn = false;
+let computerMove;
 
 
 function addListeners() {
   for (square of currentBoard) {
-    square.addEventListener('click', playerMove);
+    square.addEventListener('click', makePlayerMove);
   }
 }
 
@@ -36,12 +37,14 @@ function currentToken() {
 }
 
 
-function computerMove() {
-  currentBoard[randomMove()].textContent = currentToken();
-  moveCounter++;
-  if (gameOver()) {
-    gameFinished();
-  };
+function evaluateMoves(depth) {
+  if(gameTie()) {
+    return 0;
+  } else if (currentToken() === "X") {
+    return depth - 10;
+  } else if (currentToken() === "O") {
+    return 10 - depth;
+  }
 }
 
 
@@ -73,7 +76,6 @@ function gameTie() {
 
 function randomMove() {
   randomSpace = Math.floor(Math.random() * (9 - 0));
-  console.log(randomSpace)
   if (currentBoard[randomSpace].textContent !== " ") {
     return randomMove();
   } else {
@@ -81,24 +83,21 @@ function randomMove() {
   }
 }
 
-
-function minimax(depth) {
-  if(gameOver) {
-    return evaluateMoves(depth)
-  }
-
-  depth++
-  let scores = [];
-  let moves = [];
-  let availableMoves = availableMoves();
-
-  // for(let move of availableMoves) {
-
-  // }
+function makeMove(index) {
+  currentBoard[index].textContent = currentToken();
 }
 
+function makeComputerMove() {
+  // currentBoard[randomMove()].textContent = currentToken();
+  minimax(0);
+  makeMove(computerMove)
+  moveCounter++;
+  if (gameOver()) {
+    gameFinished();
+  };
+}
 
-function playerMove() {
+function makePlayerMove() {
   if (this.textContent != " ") {
     alert("You cannot move there. Please pick a different spot");
   } else {
@@ -109,14 +108,49 @@ function playerMove() {
   if (gameOver()) {
     gameFinished();
   } else if (computer) {
-    computerMove();
+    makeComputerMove();
   };
+}
+
+function unmakeMove(index) {
+  currentBoard[index].textContent = " ";
+}
+
+function minimax(depth) {
+  if(gameOver()) {
+    return evaluateMoves(depth)
+  }
+
+  depth++
+  let scores = [];
+  let moves = [];
+
+  for(let move of availableMoves()) {
+    makeMove(move);
+    scores.push(minimax(depth));
+    moves.push(move);
+    unmakeMove(move);
+  }
+
+  if(currentToken() === 'O') {
+    maxScore = Math.max.apply(Math, scores);
+    maxScoreIndex = scores.indexOf(maxScore);
+    computerChoice = moves[maxScoreIndex];
+    console.log(scores[maxScoreIndex])
+    return scores[maxScoreIndex]
+  } else {
+    minScore = Math.min.apply(Math, scores);
+    minScoreIndex = scores.indexOf(minScore);
+    computerChoice = moves[minScoreIndex];
+    console.log(scores[minScoreIndex])
+    return scores[minScoreIndex]
+  }
 }
 
 
 function removeListeners() {
   for (square of currentBoard) {
-    square.removeEventListener('click', playerMove);
+    square.removeEventListener('click', makePlayerMove);
   }
 }
 
