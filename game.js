@@ -7,7 +7,6 @@ const winningCombos = [
 let currentBoard = Array.from(document.getElementsByTagName('td'));
 let alertBanner = document.getElementById('alertBanner');
 let moveCounter = 0;
-// let gameOver = false;
 let computer = false;
 let playerTurn = false;
 
@@ -37,25 +36,12 @@ function currentToken() {
 }
 
 
-function winningCombo() {
-  winningCombos.forEach(function(combo, index) {
-    let space1 = currentBoard[combo[0]].textContent;
-    let space2 = currentBoard[combo[1]].textContent;
-    let space3 = currentBoard[combo[2]].textContent;
-
-    if (space1 === "X" && space2 === "X" && space3 === "X") {
-      gameFinished(space1);
-    } else if (space1 === "O" && space2 === "O" && space3 === "O") {
-      gameFinished(space1);
-    };
-  });
-};
-
-
 function computerMove() {
   currentBoard[randomMove()].textContent = currentToken();
   moveCounter++;
-  winningCombo();
+  if (gameOver()) {
+    gameFinished();
+  };
 }
 
 
@@ -63,24 +49,27 @@ function fullBoard() {
   return !currentBoard.some(function(square) { return square.textContent === " "})
 }
 
-function gameFinished(token) {
-  if (token) {
-    alertBanner.innerHTML = `Winner: ${token}`;
-  } else {
-    alertBanner.innerHTML = 'Tie Game!';
-  }
 
-  gameOver = true;
+function gameFinished() {
+  if (gameTie()) {
+    alertBanner.innerHTML = 'Tie Game';
+  } else {
+    moveCounter--
+    alertBanner.innerHTML = `Winner: ${currentToken()}`;
+  }
   removeListeners();
 }
+
 
 function gameOver() {
   return winningCombo() || fullBoard();
 }
 
+
 function gameTie() {
   return !winningCombo() && fullBoard();
 }
+
 
 function randomMove() {
   randomSpace = Math.floor(Math.random() * (9 - 0));
@@ -109,8 +98,6 @@ function minimax(depth) {
 }
 
 
-
-
 function playerMove() {
   if (this.textContent != " ") {
     alert("You cannot move there. Please pick a different spot");
@@ -119,10 +106,11 @@ function playerMove() {
     moveCounter++;
     playerTurn = false
   }
-  winningCombo();
-  if (computer) {
+  if (gameOver()) {
+    gameFinished();
+  } else if (computer) {
     computerMove();
-  }
+  };
 }
 
 
@@ -134,7 +122,6 @@ function removeListeners() {
 
 
 function startGame(gameType) {
-  gameOver = false;
   moveCounter = 0;
   alertBanner.innerHTML = "";
   for (square of currentBoard) {
@@ -145,3 +132,18 @@ function startGame(gameType) {
     computer = true;
   }
 }
+
+
+function winningCombo() {
+  for(let combo of winningCombos) {
+    let space1 = currentBoard[combo[0]].textContent;
+    let space2 = currentBoard[combo[1]].textContent;
+    let space3 = currentBoard[combo[2]].textContent;
+
+    if (space1 === "X" && space2 === "X" && space3 === "X") {
+      return true;
+    } else if (space1 === "O" && space2 === "O" && space3 === "O") {
+      return true;
+    };
+  };
+};
