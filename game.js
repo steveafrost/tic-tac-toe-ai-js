@@ -7,7 +7,7 @@ const winningCombos = [
 let currentBoard = Array.from(document.getElementsByTagName('td'));
 let alertBanner = document.getElementById('alertBanner');
 let moveCounter = 0;
-let gameOver = false;
+// let gameOver = false;
 let computer = false;
 let playerTurn = false;
 
@@ -37,7 +37,7 @@ function currentToken() {
 }
 
 
-function checkWinOrTie() {
+function winningCombo() {
   winningCombos.forEach(function(combo, index) {
     let space1 = currentBoard[combo[0]].textContent;
     let space2 = currentBoard[combo[1]].textContent;
@@ -49,12 +49,38 @@ function checkWinOrTie() {
       gameFinished(space1);
     };
   });
-
-  if (fullBoard()) {
-    gameFinished();
-  }
 };
 
+
+function computerMove() {
+  currentBoard[randomMove()].textContent = currentToken();
+  moveCounter++;
+  winningCombo();
+}
+
+
+function fullBoard() {
+  return !currentBoard.some(function(square) { return square.textContent === " "})
+}
+
+function gameFinished(token) {
+  if (token) {
+    alertBanner.innerHTML = `Winner: ${token}`;
+  } else {
+    alertBanner.innerHTML = 'Tie Game!';
+  }
+
+  gameOver = true;
+  removeListeners();
+}
+
+function gameOver() {
+  return winningCombo() || fullBoard();
+}
+
+function gameTie() {
+  return !winningCombo() && fullBoard();
+}
 
 function randomMove() {
   randomSpace = Math.floor(Math.random() * (9 - 0));
@@ -67,16 +93,22 @@ function randomMove() {
 }
 
 
-function computerMove() {
-  currentBoard[randomMove()].textContent = currentToken();
-  moveCounter++;
-  checkWinOrTie();
+function minimax(depth) {
+  if(gameOver) {
+    return evaluateMoves(depth)
+  }
+
+  depth++
+  let scores = [];
+  let moves = [];
+  let availableMoves = availableMoves();
+
+  // for(let move of availableMoves) {
+
+  // }
 }
 
 
-function fullBoard() {
-  return !currentBoard.some(function(square) { return square.textContent === " "})
-}
 
 
 function playerMove() {
@@ -87,11 +119,12 @@ function playerMove() {
     moveCounter++;
     playerTurn = false
   }
-  checkWinOrTie();
+  winningCombo();
   if (computer) {
     computerMove();
   }
 }
+
 
 function removeListeners() {
   for (square of currentBoard) {
@@ -111,16 +144,4 @@ function startGame(gameType) {
   if (gameType === '1') {
     computer = true;
   }
-}
-
-
-function gameFinished(token) {
-  if (token) {
-    alertBanner.innerHTML = `Winner: ${token}`;
-  } else {
-    alertBanner.innerHTML = 'Tie Game!';
-  }
-
-  gameOver = true;
-  removeListeners();
 }
