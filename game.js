@@ -86,7 +86,7 @@ function makeStateMove(index) {
 }
 
 function unmakeMove(index) {
-  currentState[index].textContent = " ";
+  currentBoard[index].textContent = " ";
 }
 
 function makeComputerMove() {
@@ -125,10 +125,10 @@ function minimax(depth) {
 
   for(var move of aMoves) {
     makeMove(move);
-    debugger
     scores.push(minimax(depth));
     moves.push(move);
-    unmakeMove(move);
+        unmakeMove(move)
+
   }
 
   var maxScore, maxScoreIndex, minScore, minScoreIndex;
