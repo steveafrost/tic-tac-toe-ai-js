@@ -5,6 +5,7 @@ const winningCombos = [
                       ]
 
 let currentBoard = Array.from(document.getElementsByTagName('td'));
+let currentState = currentBoard;
 let alertBanner = document.getElementById('alertBanner');
 let moveCounter = 0;
 let computer = false;
@@ -23,7 +24,7 @@ function availableMoves() {
   let availableMoves = [];
 
   currentBoard.forEach(function(square, index) {
-    if (square.textContent == " ") {
+    if (square.textContent === " ") {
       availableMoves.push(index);
     };
   });
@@ -74,24 +75,23 @@ function gameTie() {
 }
 
 
-function randomMove() {
-  randomSpace = Math.floor(Math.random() * (9 - 0));
-  if (currentBoard[randomSpace].textContent !== " ") {
-    return randomMove();
-  } else {
-    return randomSpace;
-  }
-}
-
 function makeMove(index) {
   currentBoard[index].textContent = currentToken();
   moveCounter++;
 }
 
+function makeStateMove(index) {
+  currentBoard[index] = currentToken();
+  moveCounter++;
+}
+
+function unmakeMove(index) {
+  currentState[index].textContent = " ";
+}
+
 function makeComputerMove() {
-  // currentBoard[randomMove()].textContent = currentToken();
   minimax(0);
-  makeMove(computerMove)
+  makeMove(computerChoice);
   if (gameOver()) {
     gameFinished();
   };
@@ -110,22 +110,22 @@ function makePlayerMove() {
   };
 }
 
-function unmakeMove(index) {
-  currentBoard[index].textContent = " ";
-  moveCounter--;
-}
 
 function minimax(depth) {
+  console.log(`the depth is ${depth}`);
   if(gameOver()) {
-    return evaluateMoves(depth)
+    return evaluateMoves(depth);
   }
 
-  depth++
-  let scores = [];
-  let moves = [];
+  depth++;
+  var scores = [];
+  var moves = [];
 
-  for(let move of availableMoves()) {
+  var aMoves = availableMoves();
+
+  for(var move of aMoves) {
     makeMove(move);
+    debugger
     scores.push(minimax(depth));
     moves.push(move);
     unmakeMove(move);
@@ -184,3 +184,15 @@ function winningCombo() {
     };
   };
 };
+
+
+
+
+// function randomMove() {
+//   randomSpace = Math.floor(Math.random() * (9 - 0));
+//   if (currentBoard[randomSpace].textContent !== " ") {
+//     return randomMove();
+//   } else {
+//     return randomSpace;
+//   }
+// }
