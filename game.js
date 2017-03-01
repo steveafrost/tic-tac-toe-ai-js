@@ -5,7 +5,7 @@ const winningCombos = [
                       ]
 
 let currentBoard = Array.from(document.getElementsByTagName('td'));
-let currentState = currentBoard;
+let currentState = availableMoves();
 let alertBanner = document.getElementById('alertBanner');
 let moveCounter = 0;
 let computer = false;
@@ -90,7 +90,7 @@ function unmakeMove(index) {
 }
 
 function makeComputerMove() {
-  minimax(0);
+  minimax(currentState, 0);
   makeMove(computerChoice);
   if (gameOver()) {
     gameFinished();
@@ -111,7 +111,7 @@ function makePlayerMove() {
 }
 
 
-function minimax(depth) {
+function minimax(board, depth) {
   console.log(`the depth is ${depth}`);
   if(gameOver()) {
     return evaluateMoves(depth);
@@ -121,14 +121,13 @@ function minimax(depth) {
   var scores = [];
   var moves = [];
 
-  var aMoves = availableMoves();
-
-  for(var move of aMoves) {
+  for(var move of availableMoves()) {
+    debugger
     makeMove(move);
-    scores.push(minimax(depth));
+    newState = availableMoves();
+    scores.push(minimax(newState, depth));
     moves.push(move);
-        unmakeMove(move)
-
+    newState
   }
 
   var maxScore, maxScoreIndex, minScore, minScoreIndex;
