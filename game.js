@@ -12,13 +12,11 @@ let computer = false;
 let playerTurn = false;
 let computerMove;
 
-
 function addListeners() {
   for (square of currentBoard) {
     square.addEventListener('click', makePlayerMove);
   }
 }
-
 
 function availableMoves() {
   let availableMoves = [];
@@ -32,11 +30,9 @@ function availableMoves() {
   return availableMoves;
 }
 
-
 function currentToken() {
   return moveCounter % 2 === 0 ? "X" : "O";
 }
-
 
 function evaluateMoves(depth) {
   if(gameTie()) {
@@ -48,11 +44,9 @@ function evaluateMoves(depth) {
   }
 }
 
-
 function fullBoard() {
   return !currentBoard.some(function(square) { return square.textContent === " "})
 }
-
 
 function gameFinished() {
   if (gameTie()) {
@@ -64,29 +58,26 @@ function gameFinished() {
   removeListeners();
 }
 
-
 function gameOver() {
   return winningCombo() || fullBoard();
 }
 
-
 function gameTie() {
   return !winningCombo() && fullBoard();
 }
-
 
 function makeMove(index) {
   currentBoard[index].textContent = currentToken();
   moveCounter++;
 }
 
-function makeStateMove(index) {
-  currentBoard[index] = currentToken();
-  moveCounter++;
-}
-
 function unmakeMove(index) {
   currentBoard[index].textContent = " ";
+}
+
+function tryMove(board, move) {
+  board[move] = currentToken();
+  moveCounter++;
 }
 
 function makeComputerMove() {
@@ -110,7 +101,6 @@ function makePlayerMove() {
   };
 }
 
-
 function minimax(board, depth) {
   console.log(`the depth is ${depth}`);
   if(gameOver()) {
@@ -118,19 +108,20 @@ function minimax(board, depth) {
   }
 
   depth++;
-  var scores = [];
-  var moves = [];
+  let scores = [];
+  let moves = [];
 
-  for(var move of availableMoves()) {
+  for(let move of board) {
+    let newState = JSON.parse(JSON.stringify(board));
+    tryMove(board, move);
     debugger
-    makeMove(move);
-    newState = availableMoves();
+
     scores.push(minimax(newState, depth));
     moves.push(move);
-    newState
+
   }
 
-  var maxScore, maxScoreIndex, minScore, minScoreIndex;
+  let maxScore, maxScoreIndex, minScore, minScoreIndex;
 
   if(currentToken() === 'O') {
     maxScore = Math.max.apply(Math, scores);
@@ -149,13 +140,11 @@ function minimax(board, depth) {
   }
 }
 
-
 function removeListeners() {
   for (square of currentBoard) {
     square.removeEventListener('click', makePlayerMove);
   }
 }
-
 
 function startGame(gameType) {
   moveCounter = 0;
@@ -168,7 +157,6 @@ function startGame(gameType) {
     computer = true;
   }
 }
-
 
 function winningCombo() {
   for(let combo of winningCombos) {
@@ -183,9 +171,6 @@ function winningCombo() {
     };
   };
 };
-
-
-
 
 // function randomMove() {
 //   randomSpace = Math.floor(Math.random() * (9 - 0));
