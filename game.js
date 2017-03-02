@@ -30,6 +30,10 @@ function availableMoves() {
   return availableMoves;
 }
 
+function copyState(state) {
+  return JSON.parse(JSON.stringify(state));
+}
+
 function currentToken() {
   return moveCounter % 2 === 0 ? "X" : "O";
 }
@@ -76,7 +80,7 @@ function unmakeMove(index) {
 }
 
 function tryMove(board, move) {
-  board[move] = currentToken();
+  board[move].textContent = currentToken();
   moveCounter++;
 }
 
@@ -112,11 +116,13 @@ function minimax(board, depth) {
   let moves = [];
 
   for(let move of board) {
-    let newState = JSON.parse(JSON.stringify(board));
-    tryMove(board, move);
+    let nextState = copyState(board);
+    tryMove(nextState, move);
+
+
     debugger
 
-    scores.push(minimax(newState, depth));
+    scores.push(minimax(nextState, depth));
     moves.push(move);
 
   }
