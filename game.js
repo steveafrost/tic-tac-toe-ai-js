@@ -1,8 +1,15 @@
+/* jshint esversion: 6 */
+
 const winningCombos = [
-                        [0,1,2], [3,4,5], [6,7,8], // horizontal
-                        [0,3,6], [1,4,7], [2,5,8], // vertical
-                        [0,4,8], [2,4,6]           // diagonal
-                      ]
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8], // horizontal
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8], // vertical
+  [0, 4, 8],
+  [2, 4, 6] // diagonal
+];
 
 let currentBoard = Array.from(document.getElementsByTagName('td'));
 let currentState = availableMoves();
@@ -13,7 +20,7 @@ let playerTurn = false;
 let computerMove;
 
 function addListeners() {
-  for (square of currentBoard) {
+  for (let square of currentBoard) {
     square.addEventListener('click', makePlayerMove);
   }
 }
@@ -24,7 +31,7 @@ function availableMoves() {
   currentBoard.forEach(function(square, index) {
     if (square.textContent === " ") {
       availableMoves.push(index);
-    };
+    }
   });
 
   return availableMoves;
@@ -39,7 +46,7 @@ function currentToken() {
 }
 
 function evaluateMoves(depth) {
-  if(gameTie()) {
+  if (gameTie()) {
     return 0;
   } else if (currentToken() === "X") {
     return depth - 10;
@@ -49,20 +56,23 @@ function evaluateMoves(depth) {
 }
 
 function fullBoard() {
-  return !currentBoard.some(function(square) { return square.textContent === " "})
+  return !currentBoard.some(function(square) {
+    return square.textContent === " ";
+  });
 }
 
 function gameFinished() {
   if (gameTie()) {
     alertBanner.innerHTML = 'Tie Game';
   } else {
-    moveCounter--
+    moveCounter--;
     alertBanner.innerHTML = `Winner: ${currentToken()}`;
   }
   removeListeners();
 }
 
 function gameOver() {
+  debugger;
   return winningCombo() || fullBoard();
 }
 
@@ -89,7 +99,7 @@ function makeComputerMove() {
   makeMove(computerChoice);
   if (gameOver()) {
     gameFinished();
-  };
+  }
 }
 
 function makePlayerMove() {
@@ -102,12 +112,12 @@ function makePlayerMove() {
     gameFinished();
   } else if (computer) {
     makeComputerMove();
-  };
+  }
 }
 
 function minimax(board, depth) {
   console.log(`the depth is ${depth}`);
-  if(gameOver()) {
+  if (gameOver()) {
     return evaluateMoves(depth);
   }
 
@@ -115,13 +125,9 @@ function minimax(board, depth) {
   let scores = [];
   let moves = [];
 
-  for(let move of board) {
+  for (let move of board) {
     let nextState = copyState(board);
     tryMove(nextState, move);
-
-
-    debugger
-
     scores.push(minimax(nextState, depth));
     moves.push(move);
 
@@ -129,25 +135,25 @@ function minimax(board, depth) {
 
   let maxScore, maxScoreIndex, minScore, minScoreIndex;
 
-  if(currentToken() === 'O') {
+  if (currentToken() === 'O') {
     maxScore = Math.max.apply(Math, scores);
     maxScoreIndex = scores.indexOf(maxScore);
     computerChoice = moves[maxScoreIndex];
-    console.log(scores[maxScoreIndex])
-    console.log("computer move")
-    return scores[maxScoreIndex]
+    console.log(scores[maxScoreIndex]);
+    console.log("computer move");
+    return scores[maxScoreIndex];
   } else {
     minScore = Math.min.apply(Math, scores);
     minScoreIndex = scores.indexOf(minScore);
     computerChoice = moves[minScoreIndex];
-    console.log(scores[minScoreIndex])
-    console.log("player move")
-    return scores[minScoreIndex]
+    console.log(scores[minScoreIndex]);
+    console.log("player move");
+    return scores[minScoreIndex];
   }
 }
 
 function removeListeners() {
-  for (square of currentBoard) {
+  for (let square of currentBoard) {
     square.removeEventListener('click', makePlayerMove);
   }
 }
@@ -155,9 +161,9 @@ function removeListeners() {
 function startGame(gameType) {
   moveCounter = 0;
   alertBanner.innerHTML = "";
-  for (square of currentBoard) {
+  for (let square of currentBoard) {
     square.textContent = " ";
-  };
+  }
   addListeners();
   if (gameType === '1') {
     computer = true;
@@ -165,18 +171,20 @@ function startGame(gameType) {
 }
 
 function winningCombo() {
-  for(let combo of winningCombos) {
+  let boardWon = false;
+  for (let combo of winningCombos) {
     let space1 = currentBoard[combo[0]].textContent;
     let space2 = currentBoard[combo[1]].textContent;
     let space3 = currentBoard[combo[2]].textContent;
 
     if (space1 === "X" && space2 === "X" && space3 === "X") {
-      return true;
+      boardWon = true;
     } else if (space1 === "O" && space2 === "O" && space3 === "O") {
-      return true;
-    };
-  };
-};
+      boardWon = true;
+    }
+  }
+  return boardWon;
+}
 
 // function randomMove() {
 //   randomSpace = Math.floor(Math.random() * (9 - 0));
