@@ -72,8 +72,7 @@ function gameFinished() {
 }
 
 function gameOver() {
-  debugger;
-  return winningCombo() || fullBoard();
+  return winningCombo() || gameTie();
 }
 
 function gameTie() {
@@ -89,13 +88,8 @@ function unmakeMove(index) {
   currentBoard[index].textContent = " ";
 }
 
-function tryMove(board, move) {
-  board[move].textContent = currentToken();
-  moveCounter++;
-}
-
 function makeComputerMove() {
-  minimax(currentState, 0);
+  minimax(0);
   makeMove(computerChoice);
   if (gameOver()) {
     gameFinished();
@@ -115,7 +109,7 @@ function makePlayerMove() {
   }
 }
 
-function minimax(board, depth) {
+function minimax(depth) {
   console.log(`the depth is ${depth}`);
   if (gameOver()) {
     return evaluateMoves(depth);
@@ -124,13 +118,13 @@ function minimax(board, depth) {
   depth++;
   let scores = [];
   let moves = [];
+  let board = availableMoves();
 
   for (let move of board) {
-    let nextState = copyState(board);
-    tryMove(nextState, move);
-    scores.push(minimax(nextState, depth));
+    makeMove(move);
+    scores.push(minimax(depth));
     moves.push(move);
-
+    unmakeMove(move);
   }
 
   let maxScore, maxScoreIndex, minScore, minScoreIndex;
