@@ -39,12 +39,23 @@ class Game {
     return availableMoves;
   }
 
-  currentPlayer() {
-    return this.moves % 2 === 0 ? "X" : "O";
+  finished() {
+    if (this.tie()) {
+      this.alertBanner.innerHTML = 'Tie Game';
+    } else {
+      this.alertBanner.innerHTML = `Winner: ${this.player()}`;
+    }
+    this.removeListeners();
+  }
+
+  full() {
+    return !this.state.some(function(square) {
+      return square.textContent === " ";
+    });
   }
 
   makeMove(index) {
-    this.state[index].textContent = this.currentPlayer();
+    this.state[index].textContent = this.player();
     if (this.over()) {
       return this.finished();
     }
@@ -63,29 +74,18 @@ class Game {
     }
   }
 
+  over() {
+    return this.won() || this.tie();
+  }
+
+  player() {
+    return this.moves % 2 === 0 ? "X" : "O";
+  }
+
   removeListeners() {
     for (let square of this.state) {
       square.removeEventListener('click', this.makePlayerMove);
     }
-  }
-
-  finished() {
-    if (this.tie()) {
-      this.alertBanner.innerHTML = 'Tie Game';
-    } else {
-      this.alertBanner.innerHTML = `Winner: ${this.currentPlayer()}`;
-    }
-    this.removeListeners();
-  }
-
-  full() {
-    return !this.state.some(function(square) {
-      return square.textContent === " ";
-    });
-  }
-
-  over() {
-    return this.won() || this.tie();
   }
 
   tie() {
