@@ -23,15 +23,11 @@ class Game {
       square.textContent = " ";
       square.addEventListener('click', this.makePlayerMove);
     }
-
-    if (this.type == 'computer') {
-      this.ai = new AI();
-    }
   }
 
-  availableMoves() {
+  availableMoves(state) {
     let availableMoves = [];
-      this.state.forEach(function(square, index) {
+      state.forEach(function(square, index) {
         if (square.textContent === " ") {
           availableMoves.push(index);
         }
@@ -40,7 +36,7 @@ class Game {
   }
 
   finished() {
-    if (this.tie()) {
+    if (this.tie(this.state)) {
       this.alertBanner.innerHTML = 'Tie Game';
     } else {
       this.alertBanner.innerHTML = `Winner: ${this.player()}`;
@@ -48,15 +44,17 @@ class Game {
     this.removeListeners();
   }
 
-  full() {
-    return !this.state.some(function(square) {
-      return square.textContent === " ";
-    });
+  full(state) {
+    // return !state.some(function(square) {
+    //   return square.textContent === " ";
+    // });
+
+    return !state.includes(" ");
   }
 
   makeMove(index) {
     this.state[index].textContent = this.player();
-    if (this.over()) {
+    if (this.over(currentGame.state)) {
       return this.finished();
     }
     this.moves++;
@@ -69,13 +67,13 @@ class Game {
     } else {
       currentGame.makeMove(parseInt(this.dataset.id));
     }
-    if (!currentGame.over() && currentGame.type === 'computer') {
-      currentGame.ai.makeAIMove();
+    if (!currentGame.over(currentGame.state) && currentGame.type === 'computer') {
+      currentAI.makeAIMove();
     }
   }
 
-  over() {
-    return this.won() || this.tie();
+  over(state) {
+    return this.won(state) || this.tie(state);
   }
 
   player() {
@@ -88,16 +86,16 @@ class Game {
     }
   }
 
-  tie() {
-    return !this.won() && this.full();
+  tie(state) {
+    return !this.won(state) && this.full(state);
   }
 
-  won() {
+  won(state) {
     let win = false;
     for (let combo of this.winningCombos) {
-      let space1 = this.state[combo[0]].textContent;
-      let space2 = this.state[combo[1]].textContent;
-      let space3 = this.state[combo[2]].textContent;
+      let space1 = state[combo[0]].textContent;
+      let space2 = state[combo[1]].textContent;
+      let space3 = state[combo[2]].textContent;
 
       if (space1 === "X" && space2 === "X" && space3 === "X") {
         win = true;

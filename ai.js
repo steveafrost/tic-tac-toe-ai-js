@@ -7,8 +7,8 @@ class AI {
   }
 
   makeAIMove() {
-    this.minimax();
-    currentGame.makeMove(bestMove);
+    this.minimax(currentGame.state);
+    currentGame.makeMove(this.bestMove);
     // currentGame.makeMove(this.randomMove());
   }
 
@@ -26,26 +26,33 @@ class AI {
     return currentState;
   }
 
-  minimax() {
-    if (currentGame.over()) {
-      return this.score();
+  minimax(state) {
+    if (currentGame.over(state)) {
+      console.log("HIT GAME OVER");
+      return this.score(state);
     }
 
-    let availablePositions = currentGame.availableMoves();
-    console.log(availablePositions);
+    let availablePositions = currentGame.availableMoves(state);
 
     let nextStates = availablePositions.map(function(position) {
-      console.log(currentGame.ai.nextState(position));
-      return currentGame.ai.nextState(position);
+      console.log(currentAI.nextState(position));
+      return currentAI.nextState(position);
+      // let next = currentAI.nextState(position);
+      // currentAI.minimax(next);
     });
 
-    // for(let state in nextStates) {
+    for(let singleState of nextStates) {
+      let nextScore = currentAI.minimax(singleState);
+      console.log(nextScore);
 
-    // }
+      // score computed in here
+      // put score in collection of scores
+    }
   }
 
-  score() {
-    if (currentGame.tie()) {
+  score(state) {
+    debugger
+    if (currentGame.tie(state)) {
       return 0;
     } else if (currentGame.player() === "X") {
       return this.depth - 10;
@@ -53,8 +60,6 @@ class AI {
       return 10 - this.depth;
     }
   }
-
-
 
   randomMove() {
     const randomSpace = Math.floor(Math.random() * (9 - 0));
