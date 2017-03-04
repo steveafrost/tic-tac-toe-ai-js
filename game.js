@@ -18,12 +18,11 @@ class Game {
     ];
 
     console.log('game started with type:', this.type);
-  }
 
-  addListeners() {
-    debugger
-    for (let square of this.state) {
-      square.addEventListener('click', makePlayerMove);
+    //clear board && add listeners
+    for(let square of this.state) {
+      square.textContent = " ";
+      square.addEventListener('click', this.makePlayerMove);
     }
   }
 
@@ -38,21 +37,21 @@ class Game {
   }
 
   currentPlayer() {
-    return moves % 2 === 0 ? "X" : "O";
+    return this.moves % 2 === 0 ? "X" : "O";
   }
 
   makeMove(index) {
-    currentBoard[index].textContent = currentPlayer();
-    moves++;
+    this.state[index].textContent = this.currentPlayer();
+    if (this.over()) {
+      return this.finished();
+    }
+    this.moves++;
   }
 
   makeComputerMove() {
     // minimax(0);
     // makeMove(computerChoice);
-    randomMove();
-    if (gameOver()) {
-      gameFinished();
-    }
+    this.makeMove(this.randomMove());
   }
 
   makePlayerMove() {
@@ -60,32 +59,35 @@ class Game {
     if (this.textContent != " ") {
       alert("You cannot move there. Please pick a different spot");
     } else {
-      makeMove(parseInt(this.dataset.id));
+      currentGame.makeMove(parseInt(this.dataset.id));
     }
-    if (gameOver()) {
-      gameFinished();
-    } else if (this.type == 'computer') {
-      makeComputerMove();
+    if (!currentGame.over() && currentGame.type === 'computer') {
+      currentGame.makeComputerMove();
     }
   }
 
   randomMove() {
-    randomSpace = Math.floor(Math.random() * (9 - 0));
+    const randomSpace = Math.floor(Math.random() * (9 - 0));
     if (this.state[randomSpace].textContent !== " ") {
-      return randomMove();
+      return this.randomMove();
     } else {
       return randomSpace;
     }
   }
 
-  finished() {
-    if (gameTie()) {
-      alertBanner.innerHTML = 'Tie Game';
-    } else {
-      moves--;
-      alertBanner.innerHTML = `Winner: ${currentPlayer()}`;
+  removeListeners() {
+    for (let square of this.state) {
+      square.removeEventListener('click', this.makePlayerMove);
     }
-    removeListeners();
+  }
+
+  finished() {
+    if (this.tie()) {
+      this.alertBanner.innerHTML = 'Tie Game';
+    } else {
+      this.alertBanner.innerHTML = `Winner: ${this.currentPlayer()}`;
+    }
+    this.removeListeners();
   }
 
   full() {
@@ -95,19 +97,19 @@ class Game {
   }
 
   over() {
-    return won() || tie();
+    return this.won() || this.tie();
   }
 
   tie() {
-    return !won() && full();
+    return !this.won() && this.full();
   }
 
   won() {
     let win = false;
-    for (let combo of winningCombos) {
-      let space1 = currentBoard[combo[0]].textContent;
-      let space2 = currentBoard[combo[1]].textContent;
-      let space3 = currentBoard[combo[2]].textContent;
+    for (let combo of this.winningCombos) {
+      let space1 = this.state[combo[0]].textContent;
+      let space2 = this.state[combo[1]].textContent;
+      let space3 = this.state[combo[2]].textContent;
 
       if (space1 === "X" && space2 === "X" && space3 === "X") {
         win = true;
