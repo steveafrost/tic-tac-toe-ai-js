@@ -1,0 +1,35 @@
+{
+  "name": "tic-tac-toe-ai",
+  "version": "1.0.0",
+  "description": "Tic-Tac-Toe w/ Unbeatable AI built in Javascript",
+  "main": "play.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steveafrost/tic-tac-toe-ai-js.git"
+  },
+  "keywords": [
+    "tic",
+    "tac",
+    "toe",
+    "ai",
+    "recursion",
+    "minimax",
+    "es6",
+    "javascript",
+    "js"
+  ],
+  "author": "Steve Frost",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/steveafrost/tic-tac-toe-ai-js/issues"
+  },
+  "homepage": "https://github.com/steveafrost/tic-tac-toe-ai-js#readme",
+  "devDependencies": {
+    "eslint": "^3.17.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0"
+  }
+}
