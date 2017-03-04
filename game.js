@@ -2,6 +2,7 @@
 
 class Game {
   constructor(type) {
+
     this.alertBanner = document.getElementById('alertBanner');
     this.moves = 0;
     this.type = type;
@@ -17,12 +18,14 @@ class Game {
       [2, 4, 6] // diagonal
     ];
 
-    console.log('game started with type:', this.type);
-
     //clear board && add listeners
     for(let square of this.state) {
       square.textContent = " ";
       square.addEventListener('click', this.makePlayerMove);
+    }
+
+    if (this.type == 'computer') {
+      this.ai = new AI();
     }
   }
 
@@ -48,12 +51,6 @@ class Game {
     this.moves++;
   }
 
-  makeComputerMove() {
-    // minimax(0);
-    // makeMove(computerChoice);
-    this.makeMove(this.randomMove());
-  }
-
   makePlayerMove() {
     console.log("playermove");
     if (this.textContent != " ") {
@@ -62,16 +59,7 @@ class Game {
       currentGame.makeMove(parseInt(this.dataset.id));
     }
     if (!currentGame.over() && currentGame.type === 'computer') {
-      currentGame.makeComputerMove();
-    }
-  }
-
-  randomMove() {
-    const randomSpace = Math.floor(Math.random() * (9 - 0));
-    if (this.state[randomSpace].textContent !== " ") {
-      return this.randomMove();
-    } else {
-      return randomSpace;
+      currentGame.ai.makeAIMove();
     }
   }
 
