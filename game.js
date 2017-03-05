@@ -6,7 +6,7 @@ class Game {
     this.alertBanner = document.getElementById('alertBanner');
     this.moves = 0;
     this.type = type;
-    this.state = Array.from(document.getElementsByTagName('td'));
+    this.board = Array.from(document.getElementsByTagName('td'));
     this.winningCombos = [
       [0, 1, 2],
       [3, 4, 5],
@@ -19,7 +19,7 @@ class Game {
     ];
 
     //clear board && add listeners
-    for(let square of this.state) {
+    for(let square of this.board) {
       square.textContent = " ";
       square.addEventListener('click', this.makePlayerMove);
     }
@@ -35,8 +35,14 @@ class Game {
     return availableMoves;
   }
 
+  boardState() {
+    return currentGame.board.map(function(square) {
+      return square.textContent;
+    });
+  }
+
   finished() {
-    if (this.tie(this.state)) {
+    if (this.tie(this.boardState())) {
       this.alertBanner.innerHTML = 'Tie Game';
     } else {
       this.alertBanner.innerHTML = `Winner: ${this.player()}`;
@@ -45,16 +51,12 @@ class Game {
   }
 
   full(state) {
-    // return !state.some(function(square) {
-    //   return square.textContent === " ";
-    // });
-
-    return !state.includes(" ");
+    return state.every(x => x == 'O' || x == 'X');
   }
 
   makeMove(index) {
-    this.state[index].textContent = this.player();
-    if (this.over(currentGame.state)) {
+    this.board[index].textContent = this.player();
+    if (this.over(currentGame.boardState())) {
       return this.finished();
     }
     this.moves++;
@@ -67,12 +69,13 @@ class Game {
     } else {
       currentGame.makeMove(parseInt(this.dataset.id));
     }
-    if (!currentGame.over(currentGame.state) && currentGame.type === 'computer') {
+    if (!currentGame.over(currentGame.boardState) && currentGame.type === 'computer') {
       currentAI.makeAIMove();
     }
   }
 
   over(state) {
+    debugger
     return this.won(state) || this.tie(state);
   }
 
@@ -81,7 +84,7 @@ class Game {
   }
 
   removeListeners() {
-    for (let square of this.state) {
+    for (let square of this.board) {
       square.removeEventListener('click', this.makePlayerMove);
     }
   }
@@ -93,9 +96,9 @@ class Game {
   won(state) {
     let win = false;
     for (let combo of this.winningCombos) {
-      let space1 = state[combo[0]].textContent;
-      let space2 = state[combo[1]].textContent;
-      let space3 = state[combo[2]].textContent;
+      let space1 = state[combo[0]];
+      let space2 = state[combo[1]];
+      let space3 = state[combo[2]];
 
       if (space1 === "X" && space2 === "X" && space3 === "X") {
         win = true;
