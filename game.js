@@ -28,7 +28,7 @@ class Game {
   availableMoves(state) {
     let availableMoves = [];
       state.forEach(function(square, index) {
-        if (square.textContent === " ") {
+        if (square === " ") {
           availableMoves.push(index);
         }
       });
@@ -63,19 +63,17 @@ class Game {
   }
 
   makePlayerMove() {
-    console.log("playermove");
     if (this.textContent != " ") {
       alert("You cannot move there. Please pick a different spot");
     } else {
       currentGame.makeMove(parseInt(this.dataset.id));
     }
-    if (!currentGame.over(currentGame.boardState) && currentGame.type === 'computer') {
+    if (!currentGame.over(currentGame.boardState()) && currentGame.type === 'computer') {
       currentAI.makeAIMove();
     }
   }
 
   over(state) {
-    debugger
     return this.won(state) || this.tie(state);
   }
 

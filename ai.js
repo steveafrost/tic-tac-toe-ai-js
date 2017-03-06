@@ -7,51 +7,55 @@ class AI {
   }
 
   makeAIMove() {
-    this.minimax(currentGame.state);
+    this.minimax(currentGame.boardState());
     currentGame.makeMove(this.bestMove);
     // currentGame.makeMove(this.randomMove());
   }
 
-  stateCopy() {
+  stateCopy(state) {
     let copy = [];
-      currentGame.state.forEach(function(square, index) {
-        copy.push(square.textContent);
+      state.forEach(function(square, index) {
+        copy.push(index);
       });
     return copy;
   }
 
-  nextState(position) {
-    let currentState = this.stateCopy();
-    currentState[position] = currentGame.player();
-    return currentState;
+  nextState(position, state) {
+    // let currentState = this.stateCopy(state);
+    state[position] = currentGame.player();
+    currentGame.moves++;
+    return state;
   }
 
   minimax(state) {
     if (currentGame.over(state)) {
+
       console.log("HIT GAME OVER");
       return this.score(state);
     }
 
+    let scores = [];
+    let moves = [];
     let availablePositions = currentGame.availableMoves(state);
 
     let nextStates = availablePositions.map(function(position) {
-      console.log(currentAI.nextState(position));
-      return currentAI.nextState(position);
+      console.log(currentAI.nextState(position,state));
+      return currentAI.nextState(position, state);
       // let next = currentAI.nextState(position);
       // currentAI.minimax(next);
     });
 
     for(let singleState of nextStates) {
-      let nextScore = currentAI.minimax(singleState);
-      console.log(nextScore);
+      // return console.log(singleState);
+      return currentAI.minimax(singleState);
 
       // score computed in here
       // put score in collection of scores
     }
+    console.log("scores: " + scores);
   }
 
   score(state) {
-    debugger
     if (currentGame.tie(state)) {
       return 0;
     } else if (currentGame.player() === "X") {
@@ -63,7 +67,7 @@ class AI {
 
   randomMove() {
     const randomSpace = Math.floor(Math.random() * (9 - 0));
-    if (currentGame.state[randomSpace].textContent !== " ") {
+    if (currentGame.board[randomSpace].textContent !== " ") {
       return this.randomMove();
     } else {
       return randomSpace;
